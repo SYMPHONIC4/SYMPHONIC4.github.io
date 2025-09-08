@@ -41,6 +41,7 @@ signInBtn.addEventListener('click', async (e) => {
 
 // Sign Up
 signUpBtn.addEventListener('click', async () => {
+  e.preventDefault();
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   try { 
@@ -147,3 +148,4 @@ async function loadRecords(){
     recordsList.appendChild(li);
   });
 }
+
