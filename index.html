@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบกรอกข้อมูล + PDF + Firebase</title>
+<link rel="stylesheet" href="style.css">
+<script type="module" src="script.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js"></script>
+<!-- jsPDF สำหรับ PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Header / โลโก้ -->
+  <header class="header">
+    <h1>💜 ระบบกรอกข้อมูลและบันทึก PDF</h1>
+    <p>ระบบเก็บข้อมูลของผู้ใช้แยกกัน พร้อมสร้างไฟล์ PDF ขนาด A4 แนวนอน</p>
+  </header>
+
+  <!-- Login / Sign Up Form -->
+  <div id="loginForm" class="card">
+    <h2>Login / Sign Up</h2>
+    <form id="authForm">
+      <input type="email" id="email" placeholder="Email" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <button type="submit" class="btn primary" id="signInBtn">Sign In</button>
+      <button type="button" class="btn secondary" id="signUpBtn">Sign Up</button>
+    </form>
+    <p class="hint">หากยังไม่มีบัญชี ให้กด Sign Up เพื่อสมัครใหม่</p>
+  </div>
+
+  <!-- Form + ข้อมูลผู้ใช้ -->
+  <div id="formContainer" class="card" style="display:none">
+    <button id="logoutBtn" class="btn secondary">Logout</button>
+
+    <h2>กรอกข้อมูลของคุณ</h2>
+    <form id="dataForm">
+      <input type="text" id="fullName" placeholder="ชื่อ-นามสกุล" required><br>
+      <input type="text" id="phone" placeholder="เบอร์โทร" required><br>
+      <textarea id="notes" placeholder="ข้อมูลเพิ่มเติม"></textarea><br>
+      <input type="file" id="photo" accept="image/*"><br>
+      <button type="submit" class="btn primary">Save & Generate PDF</button>
+      <button type="button" id="printBtn" class="btn secondary">Print PDF</button>
+    </form>
+
+    <h3>รายการข้อมูลของคุณ</h3>
+    <ul id="recordsList"></ul>
+
+    <!-- วิธีใช้งาน -->
+    <div class="guide">
+      <h4>วิธีใช้งาน:</h4>
+      <ol>
+        <li>กรอกชื่อ-นามสกุล, เบอร์โทร และข้อมูลเพิ่มเติม</li>
+        <li>แนบรูปภาพถ้าต้องการ</li>
+        <li>กดปุ่ม <strong>Save & Generate PDF</strong> เพื่อบันทึกและดาวน์โหลด PDF</li>
+        <li>กดปุ่ม <strong>Print PDF</strong> เพื่อพิมพ์ PDF แบบ A4 แนวนอน</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2025 ระบบกรอกข้อมูลและสร้าง PDF | ทำงานร่วมกับ Firebase & GitHub Pages</p>
+  </footer>
+
+</body>
+</html>
