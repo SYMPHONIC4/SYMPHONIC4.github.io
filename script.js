@@ -23,7 +23,7 @@ import {
   getDownloadURL 
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
-//  Firebase Config (แก้ comma แล้ว)
+// ✅ Firebase Config (แก้ comma แล้ว)
 const firebaseConfig = {
   apiKey: "AIzaSyAjzK-7dEVNYXdQUd5fsE0DBK02S9U2tss",
   authDomain: "projectz-a7870.firebaseapp.com",
@@ -51,7 +51,7 @@ const recordsList = document.getElementById('recordsList');
 
 let currentUser = null;
 
-//  Sign In
+// ✅ Sign In
 signInBtn.addEventListener('click', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value;
@@ -63,7 +63,7 @@ signInBtn.addEventListener('click', async (e) => {
   }
 });
 
-//  Sign Up (เพิ่ม e.preventDefault())
+// ✅ Sign Up (เพิ่ม e.preventDefault())
 signUpBtn.addEventListener('click', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value;
@@ -76,12 +76,12 @@ signUpBtn.addEventListener('click', async (e) => {
   }
 });
 
-//  Logout
+// ✅ Logout
 logoutBtn.addEventListener('click', async () => { 
   await signOut(auth); 
 });
 
-//  Auth state
+// ✅ Auth state
 onAuthStateChanged(auth, user => {
   if (user) {
     currentUser = user;
@@ -97,7 +97,7 @@ onAuthStateChanged(auth, user => {
 
 // ================= SAVE & PDF =================
 
-//  Save data + Generate PDF
+// ✅ Save data + Generate PDF
 dataForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const fullName = document.getElementById("fullName").value;
@@ -126,12 +126,12 @@ dataForm.addEventListener("submit", async (e) => {
     // บันทึกลง Firestore
     await addDoc(collection(db, "records"), newDoc);
 
-    //  สร้าง PDF หลังบันทึกเสร็จ
+    // ✅ สร้าง PDF หลังบันทึกเสร็จ
     createPDF(newDoc, (pdf) => {
       pdf.save(`${fullName}.pdf`);
     });
 
-    alert("บันทึกสำเร็จ ");
+    alert("บันทึกสำเร็จ ✅");
     dataForm.reset();
     loadRecords();
 
