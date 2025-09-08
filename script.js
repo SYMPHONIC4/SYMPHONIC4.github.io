@@ -97,9 +97,15 @@ onAuthStateChanged(auth, user => {
 
 // ================= SAVE & PDF =================
 
-// ✅ Save data + Generate PDF
+// Save data + Generate PDF
 dataForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  if (!currentUser) {
+    alert("กรุณา Sign In ก่อนบันทึกข้อมูล");
+    return;
+  }
+
   const fullName = document.getElementById("fullName").value;
   const phone = document.getElementById("phone").value;
   const notes = document.getElementById("notes").value;
@@ -108,12 +114,14 @@ dataForm.addEventListener("submit", async (e) => {
   let photoURL = null;
 
   try {
+    // ✅ อัปโหลดรูป (ถ้ามี)
     if (file) {
       const storageRef = ref(storage, `photos/${currentUser.uid}/${Date.now()}_${file.name}`);
       await uploadBytes(storageRef, file);
       photoURL = await getDownloadURL(storageRef);
     }
 
+    // ✅ เตรียมข้อมูล
     const newDoc = {
       fullName,
       phone,
@@ -123,10 +131,10 @@ dataForm.addEventListener("submit", async (e) => {
       uid: currentUser.uid
     };
 
-    // บันทึกลง Firestore
+    // ✅ บันทึก Firestore
     await addDoc(collection(db, "records"), newDoc);
 
-    // ✅ สร้าง PDF หลังบันทึกเสร็จ
+    // ✅ สร้าง PDF
     createPDF(newDoc, (pdf) => {
       pdf.save(`${fullName}.pdf`);
     });
@@ -136,10 +144,9 @@ dataForm.addEventListener("submit", async (e) => {
     loadRecords();
 
   } catch (err) {
-    alert("Error: " + err.message);
+    alert("เกิดข้อผิดพลาด: " + err.message);
   }
 });
-
 // ================= PDF =================
 
 function createPDF(data, callback) {
@@ -162,3 +169,4 @@ function createPDF(data, callback) {
     callback(pdf);
   }
 }
+
