@@ -1,62 +1,101 @@
-:root {
-  --bg: #f6f3fc;
-  --card: #ffffff;
-  --primary: #b388eb;
-  --primary-2: #d0bdf4;
-  --text: #3d2c54;
-  --border: #d6c6f2;
+const { jsPDF } = window.jspdf;
+
+
+function showSection(id) {
+document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+document.getElementById(id).classList.remove('hidden');
 }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 20px;
+
+function saveRecord() {
+const fname = document.getElementById('fname').value;
+const lname = document.getElementById('lname').value;
+const phone = document.getElementById('phone').value;
+const details = document.getElementById('details').value;
+const datetime = document.getElementById('datetime').value;
+const filename = document.getElementById('filename').value || 'งานใหม่';
+
+
+const record = { fname, lname, phone, details, datetime, filename };
+let records = JSON.parse(localStorage.getItem('records')) || [];
+records.push(record);
+localStorage.setItem('records', JSON.stringify(records));
+loadRecords();
+alert('บันทึกงานเรียบร้อย');
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 20px;
+
+function loadRecords() {
+const records = JSON.parse(localStorage.getItem('records')) || [];
+const list = document.getElementById('records-list');
+list.innerHTML = '';
+records.forEach(r => {
+const li = document.createElement('li');
+li.textContent = `${r.filename} - ${r.fname} ${r.lname}`;
+list.appendChild(li);
+});
 }
 
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  max-width: 800px;
-  margin: 20px auto;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+function searchRecords() {
+const query = document.getElementById('search').value.toLowerCase();
+const items = document.querySelectorAll('#records-list li');
+items.forEach(li => {
+li.style.display = li.textContent.toLowerCase().includes(query) ? '' : 'none';
+});
 }
 
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0 10px 0;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 16px;
+
+function downloadPDF() {
+const element = document.getElementById('form-section');
+html2canvas(element).then(canvas => {
+const imgData = canvas.toDataURL('image/png');
+const pdf = new jsPDF({ orientation: 'landscape' });
+pdf.addImage(imgData, 'PNG', 10, 10, 270, 150);
+pdf.save('งานบันทึก.pdf');
+});
 }
 
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
+
+// ระบบ Auth (demo)
+function login() {
+const user = document.getElementById('login-username').value;
+const pass = document.getElementById('login-password').value;
+const db = JSON.parse(localStorage.getItem('users')) || [];
+const found = db.find(u => u.user === user && u.pass === pass);
+if (found) {
+localStorage.setItem('currentUser', JSON.stringify(found));
+document.getElementById('auth-container').classList.add('hidden');
+document.getElementById('main-container').classList.remove('hidden');
+document.getElementById('user-info').textContent = `ผู้ใช้: ${found.user}`;
+loadRecords();
+} else {
+alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+}
 }
 
-.btn.primary { background: var(--primary); color: white; }
-.btn.secondary { background: var(--primary-2); color: white; }
 
-h2, h3, h4 { color: var(--primary); }
+function showSignUp() {
+const user = prompt('ตั้งชื่อผู้ใช้:');
+const pass = prompt('ตั้งรหัสผ่าน:');
+let db = JSON.parse(localStorage.getItem('users')) || [];
+db.push({ user, pass });
+localStorage.setItem('users', JSON.stringify(db));
+alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
+}
 
-ul { list-style: none; padding-left: 0; }
-li { background: var(--primary-2); padding: 10px; border-radius: 6px; margin-bottom: 10px; }
 
-.photo { display: block; margin-top: 5px; max-width: 200px; max-height: 150px; border-radius: 8px; }
+function showForgotPassword() {
+const user = prompt('กรอกชื่อผู้ใช้:');
+let db = JSON.parse(localStorage.getItem('users')) || [];
+const found = db.find(u => u.user === user);
+if (found) alert(`รหัสผ่านของคุณคือ: ${found.pass}`);
+else alert('ไม่พบผู้ใช้');
+}
 
-.guide { margin-top: 20px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: #f2ebfc; }
 
-.footer { text-align: center; margin-top: 30px; font-size: 14px; color: var(--muted); }
+function logout() {
+localStorage.removeItem('currentUser');
+document.getElementById('main-container').classList.add('hidden');
+document.getElementById('auth-container').classList.remove('hidden');
+}
